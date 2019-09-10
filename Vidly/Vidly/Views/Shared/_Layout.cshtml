@@ -1,0 +1,89 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vidly - Welcome to Vidly</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="~/Content/assets/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="~/Content/assets/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="~/Content/assets/favicon-16x16.png">
+    <link rel="manifest" href="~/Content/assets/site.webmanifest">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="theme-color" content="#ffffff">
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/material-design-iconic-font/2.2.0/css/material-design-iconic-font.min.css">
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+
+</head>
+<body>
+        <nav class="navbar navbar-default">
+
+            <div class="">
+                <a class="navbar-brand" href="@Url.Action("Index", "Home")"><img src="~/Content/assets/vidly-logo.png" width="60" height="40"></a>
+
+                <button class="navbar-toggle hamburger hamburger--slider js-hamburger" type="button" data-toggle="collapse" data-target="#navbarColor03">
+                <span class="hamburger-box">
+                    <span class="hamburger-inner"></span>
+                </span>
+                   
+
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarColor03">
+                    <ul class="nav navbar-nav mr-auto highlightTextOut">
+                        <li class="nav-item active">
+                            @if (ViewBag.page == "home")
+                            {
+                            <a class="nav-link" href="@Url.Action("Index", "Home")"  style="color:#5f307b!important">
+                                <i class="fa fa-film" aria-hidden="true"></i> &nbsp; Movie Gallery
+                            </a>
+                            }
+                            else {
+                                 <a class="nav-link" href="@Url.Action("Index", "Home")" style="color:#000">
+                                <i class="fa fa-film" aria-hidden="true"></i> &nbsp; Movie Gallery
+                            </a>
+                            }
+                        </li>
+                        @if (Request.IsAuthenticated)
+
+                        {
+                            <li class="nav-item active">
+                                <a class="nav-link" href="@Url.Action("Index", "Rentals")" alt="New Rental">New Rental</a>
+                            </li>
+                            <li class="nav-item active">
+                                <a class="nav-link" href="@Url.Action("Index", "Customers")" alt="Customer">Customer</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="@Url.Action("Index", "Movies")" alt="Movies">Movies</a>
+                            </li>
+
+                        }
+                    </ul>
+                        @Html.Partial("_LoginPartial")
+                    </div>
+            </div>
+
+        </nav>
+        
+    <div class="body-content">
+        @RenderBody()
+
+        @if (ViewBag.page != "home")
+        {
+            <footer class="flex-c-m">
+                <p>&copy; @DateTime.Now.Year - Vidly Application</p>
+            </footer>
+        }
+    </div>
+
+
+    @Scripts.Render("~/bundles/lib")
+    @Scripts.Render("~/bundles/moment")
+
+    @RenderSection("scripts", required: false)
+
+
+</body>
+</html>
+

@@ -1,0 +1,76 @@
+﻿@model Vidly.ViewModels.CustomerViewModel
+@{
+    ViewBag.Title = "Customers";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@Styles.Render("~/Content/main")
+
+
+<div class="form-login100">
+    <div class="container">
+        <div class="dataTableLimiter dataList">
+            <hr />
+            <h5><u><strong>Customer List[Vidly Customers]</strong></u></h5>
+            <table class="table table-bordered" id="customers" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>Customers</th>
+                        <th>Membership Type</th>
+                        <th>Discount Rate(in %)</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+
+@section scripts{
+    <script>
+        $(function () {
+            $("#customers").DataTable({
+                ajax: {
+                    url: "/api/customers",
+                    dataSrc: ""
+                },
+                columns: [{
+                    render: function (data, type, customer) {
+                        var middleName, customerName;
+                        if (customer.middleName == null) {
+                            middleName = "";
+                        } else {
+                            middleName = customer.middleName;
+                        }
+                        customerName = customer.firstName + ' ' + middleName + ' ' + customer.lastName;
+                        return customerName;
+                    }
+                },
+                {
+                    data: "membershipType",
+                    render: function (data) {
+
+                        return data.name;
+
+
+                    }
+                },
+                {
+                    data: "membershipType",
+                    render: function (data) {
+                        return data.discountRate;
+
+                    }
+                }
+                ]
+            });
+        })
+    </script>
+}
+
+@Scripts.Render("~/bundles/jquery")
+
+@Scripts.Render("~/bundles/main")

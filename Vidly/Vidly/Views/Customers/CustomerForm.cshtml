@@ -1,0 +1,181 @@
+﻿@model Vidly.ViewModels.CustomerFormViewModel
+@{
+    ViewBag.Title = "CustomerForm";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@Styles.Render("~/Content/main")
+
+
+
+
+<div class="limiter">
+    <div class="container-login100">
+        <div class="wrap-login100 p-l-85 p-r-85 p-t-55 p-b-55">
+            @using (Html.BeginForm("Save", "Customers", null, FormMethod.Post, new { @class = "login100-form validate-form flex-sb flex-w form-horizontal", role = "form" }))
+            {
+                <span class="login100-form-title p-b-32">
+                    @Model.Title
+                    <span class="txt3 text-center validation-summary">
+                        @Html.ValidationSummary(true, "Please fix the following errors")
+                    </span>
+                </span>
+
+                @Html.LabelFor(m => m.Customer.FirstName, new { @class = "txt1 p-b-11" })
+                <div class="wrap-input100 validate-input m-b-36">
+                    @Html.TextBoxFor(m => m.Customer.FirstName, new { @class = "input100" })
+                    <span class="focus-input100"></span>
+                    @Html.ValidationMessageFor(m => m.Customer.FirstName, "", new { @class = "text-danger p-abs-fix" })
+                </div>
+                if (ViewBag.action == "Update" && !string.IsNullOrEmpty(Model.Customer.MiddleName) || ViewBag.action == "Create" || string.IsNullOrEmpty(Model.Customer.MiddleName))
+                {
+                    @Html.LabelFor(m => m.Customer.MiddleName, new { @class = "txt1 p-b-11" })
+                    <div class="wrap-input100 validate-input m-b-36">
+                        @Html.TextBoxFor(m => m.Customer.MiddleName, new { @class = "input100" })
+                        <span class="focus-input100"></span>
+                        @Html.ValidationMessageFor(m => m.Customer.MiddleName, "", new { @class = "text-danger p-abs-fix" })
+                    </div>
+
+                }
+
+                @Html.LabelFor(m => m.Customer.LastName, new { @class = "txt1 p-b-11" })
+                <div class="wrap-input100 validate-input m-b-36">
+                    @Html.TextBoxFor(m => m.Customer.LastName, new { @class = "input100" })
+                    <span class="focus-input100"></span>
+                    @Html.ValidationMessageFor(m => m.Customer.LastName, "", new { @class = "text-danger p-abs-fix" })
+                </div>
+
+                @Html.LabelFor(m => m.Customer.BirthDate, new { @class = "txt1 p-b-11" })
+                <div class="wrap-input100 validate-input m-b-36">
+                    @Html.TextBoxFor(m => m.Customer.BirthDate, "{0:dd/MM/yyyy}", new { @class = "input100", @id = "formDatepicker", @autocomplete = "off", @value = "" })
+                    <span class="focus-input100"></span>
+                    @Html.ValidationMessageFor(m => m.Customer.BirthDate, "", new { @class = "text-danger p-abs-fix" })
+
+                </div>
+
+
+
+                @Html.LabelFor(m => m.Customer.MembershipTypeId, new { @class = "txt1 p-b-11" })
+
+                <div class="rs-select2 js-select-simple select--no-search m-b-36 select100">
+
+                    @Html.DropDownListFor(m => m.Customer.MembershipTypeId, new SelectList(Model.MembershipTypes, "Id", "Name"), "Select Membership Type")
+                    <span class="focus-select100"></span>
+
+                    <div class="select-dropdown"></div>
+                    @Html.ValidationMessageFor(m => m.Customer.MembershipTypeId, "", new { @class = "text-danger" })
+
+                </div>
+                    
+                <div class="flex-sb-m w-full p-b-48" id="subscribedToNewsLetter">
+
+                    <label>
+                        @Html.CheckBoxFor(m => m.Customer.IsSubscribedToNewsLetter) Is Subscribed To NewsLetter
+                    </label> 
+                           @*<input class="input-checkbox100" id="ckb1" type="checkbox" name="@Model.Customer.IsSubscribedToNewsLetter" checked="@Model.Customer.IsSubscribedToNewsLetter">
+        <label class="label-checkbox100" for="ckb1">
+            Subscribe to NewsLetter
+        </label>*@
+                 @Html.ValidationMessageFor(m => m.Customer.IsSubscribedToNewsLetter, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="container-login100-form-btn flex-sb">
+                    <input type="submit" value="Save" class="login100-form-btn" />
+                </div>
+
+                @Html.HiddenFor(m => m.Customer.Id)
+                @Html.AntiForgeryToken()
+
+            }
+
+        </div>
+    </div>
+</div>
+
+
+@*@using (Html.BeginForm("Save", "Customers"))//This method returns a Disposible object .At the end of the using block,obj returned from Html.BeginForm will be disposed and in the disposed method </form will be rendered
+    {
+        @Html.ValidationSummary(true, "Please fix the following errors")
+        <div class="form-group">
+            @Html.LabelFor(m => m.Customer.FirstName)
+            @Html.TextBoxFor(m => m.Customer.FirstName, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.Customer.FirstName)
+        </div>
+
+        if (ViewBag.action == "Update" && !string.IsNullOrEmpty(Model.Customer.MiddleName) || (ViewBag.action == "Create" || string.IsNullOrEmpty(Model.Customer.MiddleName)))
+        {
+            <div class="form-group">
+                @Html.LabelFor(m => m.Customer.MiddleName)
+                @Html.TextBoxFor(m => m.Customer.MiddleName, new { @class = "form-control" })
+            </div>
+        }
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Customer.LastName)
+            @Html.TextBoxFor(m => m.Customer.LastName, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.Customer.LastName)
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(m => m.Customer.BirthDate)
+            @Html.TextBoxFor(m => m.Customer.BirthDate, "{0:dd/MM/yyyy}", new { @class = "form-control", @id = "formDatepicker", @autocomplete = "off", @value = "" })
+            @Html.ValidationMessageFor(m => m.Customer.BirthDate)
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(m => m.Customer.MembershipTypeId)
+            @Html.DropDownListFor(m => m.Customer.MembershipTypeId, new SelectList(Model.MembershipTypes, "Id", "Name"), "Select Membership Type", new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.Customer.MembershipTypeId)
+        </div>
+        <div class="checkbox">
+            <label>
+                @Html.CheckBoxFor(m => m.Customer.IsSubscribedToNewsLetter) Subscribe to NewsLetter
+            </label>
+            @Html.ValidationMessageFor(m => m.Customer.IsSubscribedToNewsLetter)
+        </div>
+        <button type="submit" class="btn btn-primary">Save</button>
+        @Html.HiddenFor(m => m.Customer.Id)
+        @Html.AntiForgeryToken()
+    }*@
+
+
+        @Scripts.Render("~/bundles/jqueryval")
+    
+@section scripts{
+    <script>
+        $(function () {
+
+            $(".rs-select2").change(function () {
+
+                setTimeout(function () { $(".focus-select100").removeClass("select100-show"); }, 200);
+
+            });
+            $("#Customer_MembershipTypeId").on('select2:select', function (e) {
+                var data = e.params.data;
+                console.log(data);
+                var errorMessage = $(this).attr("data-val-number");
+
+                $(this).find(".field-validation-text").text(errorMessage);
+                console.log($(this).attr("data-val-number"));
+                console.log(data.id);
+                if (data.id) {
+                    $(".rs-select2").find(".field-validation-error").css("display", "none");
+                    $(".focus-select100").addClass("select100-show");
+                    $("[data-valmsg-for= 'Customer.MembershipTypeId']").removeClass("validation-error-message");
+
+                } else {
+                    $(".rs-select2").find(".field-validation-error").css("display", "block");
+
+                    $("[data-valmsg-for= 'Customer.MembershipTypeId']").addClass("validation-error-message");
+
+                    $(".focus-select100").removeClass("select100-show");
+
+                }
+            });
+        })
+
+
+    </script>
+
+
+
+}
+
+

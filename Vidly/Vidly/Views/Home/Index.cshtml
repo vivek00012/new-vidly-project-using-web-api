@@ -1,0 +1,109 @@
+﻿
+@using Vidly.Models
+@model LoginViewModel
+@{
+    ViewBag.Title = "Log in";
+
+}
+
+@Styles.Render("~/Content/homepage")
+<div class="waiting-overlay"></div>
+   <div class="limiter">
+       <div class="container-login100">
+           <div class="navigation-animate-block">
+               <div class="overlay">
+
+               </div>
+           </div>
+
+           <div class="homepage-movie-gallery-content movie-gallery d-flex flex-row">
+               <div class="gallery-info">
+                   <div class="list-unstyled justified-gallery" id="aniimated-thumbnials">
+                       <a href="~/Content/assets/movie-avatar" class="gallery">
+                           <img class="img-responsive" src="/Content/assets/movie-avatar.png" />
+                           <div class="movie-gallery-poster">
+                               <img src="~/Content/images/zoom.png">
+                           </div>
+                       </a>
+                   </div>
+                   <div class="movie-info">
+
+                   </div>
+               </div>
+               <div class="divider"></div>
+               <div class="gallery-List">
+                   <div class="list-type5">
+                       <ol id="movieList"></ol>
+                   </div>
+               </div>
+           </div>
+           <div class="homepage-movie-gallery-content movie-gallery d-flex flex-c-m noMovieContent ">
+                   <p>
+                       No Movies are Listed !.<br />If you are Admin please add one!
+                   </p>
+           </div>
+
+       </div>
+       </div>
+
+
+        
+@section scripts{
+<script> 
+    $(function () {
+        var moviedata = [];
+        $.ajax({
+            url: "/api/movies/",
+            method: "GET",
+            success: function (result) {
+                $(".waiting-overlay").hide();
+
+                console.log(result.length)
+                if (result.length !== 0) {
+                    $(".gallery-info,.gallery-List,.divider").show();
+                    $(".noMovieContent").hide();
+
+                } else {
+                    $(".noMovieContent").show()
+                }
+                $.each(result, function (i, data) {
+                    moviedata.push(moviedata);
+                    $("#movieList").append("<li><a class='movieItem' data-movie-id=" + data.id + ">"
+                        + data.name + "<span style='float:right;'><strong style='color:#2655c3'>" + data.genre.name +
+                        "</strong> <span style='color:#000;font-family:cursive;'>("
+                        + new Date(data.releaseDate).getFullYear() + ")</span> </span></a></li>")
+                    $("#movieList li:nth-child(1) a").trigger("click");
+
+                });
+                
+                
+            }
+        })
+
+
+        $("#movieList").on("click", ".movieItem", function (e) {
+            e.preventDefault();
+            var id = $(this).attr("data-movie-id");
+            $.ajax({
+                url: "/api/movies/" + id,
+                method: "GET",
+                success: function (data) {
+                    console.log(data);
+                    $(".justified-gallery a").attr("href", data.movieImageLocation.substring(1) + "/" + data.movieImageName)
+                    $(".justified-gallery img").attr("src", data.movieThumbnailLocation.substring(1) + "/" + data.movieThumbnailName);
+
+                    $(".movie-info").html("");
+                    var table = "<table class='table table-bordered' id='movieTable' style='width:100%;'><tr>";
+                    table += "<th>Movie</th><td>" + data.name + "</td></tr>";
+                    table += "<tr><th>Genre</th> <td>" + data.genre.name + "</td></tr>";
+                    table += "<tr><th>Release Date</th> <td>" + moment(data.releaseDate).format('DD/MM/YYYY') + "</td></tr>";
+                    table += "<tr><th>Available On Rent</th><td>Yes</td>";
+                    table += "</tr></table>";
+                    $(".movie-info").html(table);
+                }
+            });
+
+        });
+    });        
+</script>    
+}

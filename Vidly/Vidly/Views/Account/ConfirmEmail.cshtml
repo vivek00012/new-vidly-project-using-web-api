@@ -1,0 +1,32 @@
+﻿@{
+    ViewBag.Title = "Confirm Email";
+}
+
+@Styles.Render("~/Content/main")
+
+
+
+<div class="limiter">
+    <div class="container-50">
+        <div class="wrap-login100 p-l-20 p-r-20 p-t-20 p-b-20">
+
+            <h4 class="txt5 lh-4">@ViewBag.Title.</h4>
+            <p>
+                Thank you for confirming your email.<br />
+                Please <u><strong>@Html.ActionLink("Click here to Log in", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })</strong></u>
+
+            </p>
+        </div>
+    </div>
+</div>
+
+@Scripts.Render("~/bundles/jquery")
+
+@Scripts.Render("~/bundles/main")
+
+@*<h2>@ViewBag.Title.</h2>
+<div>
+    <p>
+        Thank you for confirming your email. Please @Html.ActionLink("Click here to Log in", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })
+    </p>
+</div>*@

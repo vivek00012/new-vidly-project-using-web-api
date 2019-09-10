@@ -1,0 +1,109 @@
+﻿@model Vidly.ViewModels.CustomerViewModel
+@{
+    ViewBag.Title = "Customers";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@Styles.Render("~/Content/main")
+
+
+@*@if (Model.Customers.Count != 0 && (@ViewBag.customerId == "AllCustomers"))*@
+<div class="form-login100">
+    <div class="container">
+        <div class="dataTableLimiter dataList">
+       @Html.ActionLink("New Customer", "New", "Customers",null,new {@class="customerBtn" })
+            <hr />
+            <h5><u><strong>Customer List[Vidly Customers]</strong></u></h5>
+            <table class="table table-bordered" id="customers" style="width: 100%;">
+                <thead>
+                    <tr>
+                        <th>Customers</th>
+                        <th>Membership Type</th>
+                        <th>Discount Rate(in %)</th>
+                        <th>Delete</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+@section scripts{
+    <script>
+        $(function () {
+
+            var table = $("#customers").DataTable({
+
+                ajax: {
+                    url: "/api/customers",
+                    dataSrc: ""
+                },
+                columns: [{
+                    render: function (data, type, customer) {
+                        var middleName, customerName;
+                        if (customer.middleName == null) {
+                            middleName = "";
+                        } else {
+                            middleName = customer.middleName;
+                        }
+                        customerName = customer.firstName + ' ' + middleName + ' ' + customer.lastName;
+                        return "<a href='/customers/edit/" + customer.id + "'>" + customerName + "</a>";
+                    }
+                },
+                {
+                    data: "membershipType",
+                    render: function (data) {
+
+                        return data.name;
+
+
+                    }
+                },
+                {
+                    data: "membershipType",
+                    render: function (data) {
+                        return data.discountRate;
+
+                    }
+
+                },
+                {
+                    data: "id",
+                    render: function (data) {
+
+                            return "<a class='btn btn-link js-delete' alt='delete' data-customer-id=" + data + "><i class='fa fa-trash' aria-hidden='true'></i></a>";
+                    }
+
+
+
+
+                }]
+
+
+
+
+            });
+            $("#customers").on("click", ".js-delete", function () {
+                var button = $(this);
+                bootbox.confirm("Are you sure you want to delete this customer?", function (result) {
+                    if (result) {
+                        $.ajax({
+                            url: "/api/Customers/" + button.attr("data-customer-id"),
+                            method: "DELETE",
+                            success: function () {
+                                table.row(button.parents("tr")).remove().draw();
+                            }
+                        });
+                    }
+                })
+            });
+        })
+    </script>
+}
+
+@Scripts.Render("~/bundles/jquery")
+
+@Scripts.Render("~/bundles/main")

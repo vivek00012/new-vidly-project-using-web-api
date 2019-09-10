@@ -1,0 +1,220 @@
+﻿@model Vidly.ViewModels.MovieViewModel
+@{
+
+    ViewBag.Title = "MovieForm";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@using System.Configuration;
+@using System.Web.Hosting;
+
+
+@Styles.Render("~/Content/main")
+
+<div class="limiter">
+    <div class="container-login100">
+        <div class="wrap-login100 p-l-85 p-r-85 p-t-55 p-b-55">
+            @using (Html.BeginForm("Save", "Movies", null, FormMethod.Post, new { @class = "login100-form validate-form flex-sb flex-w form-horizontal", @enctype = "multipart/form-data", role = "form" }))
+            {
+                <span class="login100-form-title p-b-32">
+                    @Model.Title
+                    <span class="txt3 text-center validation-summary">
+                        @Html.ValidationSummary(true, "Please fix the following errors")
+                    </span>
+                </span>
+
+                @Html.LabelFor(m => Model.Name, new { @class = "txt1 p-b-11" })
+                <div class="wrap-input100 validate-input m-b-36">
+                    @Html.TextBoxFor(m => Model.Name, new { @class = "input100" })
+                    <span class="focus-input100"></span>
+                    @Html.ValidationMessageFor(m => Model.Name, "", new { @class = "text-danger  p-abs-fix" })
+                </div>
+
+                @Html.LabelFor(m => Model.GenreId, new { @class = "txt1 p-b-11" })
+                <div class="rs-select2 js-select-simple select--no-search m-b-36 select100">
+                    @Html.DropDownListFor(m => Model.GenreId, new SelectList(Model.Genres, "Id", "Name"), "Select Genre")
+                    <span class="focus-select100"></span>
+                    <div class="select-dropdown"></div>
+                    @Html.ValidationMessageFor(m => Model.GenreId, "", new { @class = "text-danger  p-abs-fix" })
+                </div>
+
+                @Html.LabelFor(m => Model.ReleaseDate, new { @class = "txt1 p-b-11" })
+                <div class="wrap-input100 validate-input m-b-36">
+                    @Html.TextBoxFor(m => Model.ReleaseDate, "{0:dd/MM/yyyy}", new { @class = "input100", @id = "formDatepicker", @autocomplete = "off", @value = "" })
+                    <span class="focus-input100"></span>
+                    @Html.ValidationMessageFor(m => Model.ReleaseDate, "", new { @class = "text-danger  p-abs-fix" })
+                </div>
+
+                @Html.LabelFor(m => Model.NumberInStock, new { @class = "txt1 p-b-11" })
+                <div class="wrap-input100 validate-input m-b-36">
+                    @Html.TextBoxFor(m => Model.NumberInStock, new { @class = "input100" })
+                    <span class="focus-input100"></span>
+                    @Html.ValidationMessageFor(m => Model.NumberInStock, "", new { @class = "text-danger  p-abs-fix" })
+                </div>
+
+                @Html.LabelFor(m => Model.MovieImage, new { @class = "txt1 p-b-11" })
+                <div class="avatar-upload wrap-input100 validate-input m-b-36 p-l-10" style="border:none;">
+                    <div class="avatar-edit">
+                        <input type='file' id="imageUpload" class="valid" accept=".png, .jpg, .jpeg" name="MovieImage"  required />
+                        <label for="imageUpload"></label>
+                    </div>
+                    <div class="avatar-preview">
+                        @if (@Model.Title == "Edit Movie")
+                        {
+                            <div id="imagePreview" style="background-image: url('@Model.ImagePath');">
+                            </div>
+                        }
+                        else
+                        {
+                            <div id="imagePreview" style="background-image: url('/Content/assets/movie-avatar.png');">
+                            </div>
+                        }
+                    </div>
+                    @Html.ValidationMessageFor(m => Model.MovieImage, "", new { @class = "text-danger  p-abs-fix" })
+
+                </div>
+
+                <div class="container-login100-form-btn flex-sb">
+                    <input type="submit" value="Save" class="login100-form-btn" />
+                </div>
+
+                @Html.HiddenFor(m => Model.Id)
+                @*@Html.HiddenFor(m => Model.MovieThumbnailLocation)*@
+
+                @Html.AntiForgeryToken()
+
+            }
+
+        </div>
+    </div>
+</div>
+
+
+
+@section scripts{
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script>
+        function readURL(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+
+                    $('#imagePreview').css('background-image', 'url(' + e.target.result + ')');
+                    $('#imagePreview').hide();
+                    $('#imagePreview').fadeIn(650);
+                }
+                reader.readAsDataURL(input.files[0]);
+                $("#imageUpload").removeClass("input-validation-error").addClass("valid");
+                $(".field-validation-error").hide();
+            } else {
+                $("#imageUpload").addClass("input-validation-error").removeClass("valid");
+                $(".field-validation-error").show();
+            }
+        }
+        $("#imageUpload").change(function () {
+            readURL(this);
+        });
+
+        $(function () {
+
+            $(".validate-form").submit(function (e) {
+                console.log(e.target.data);
+            })
+            $(".rs-select2").change(function () {
+
+                setTimeout(function () { $(".focus-select100").removeClass("select100-show"); }, 200);
+
+            });
+            $("#GenreId").on('select2:select', function (e) {
+                var data = e.params.data;
+                console.log(data);
+                var errorMessage = $(this).attr("data-val-number");
+
+                $(this).find(".field-validation-text").text(errorMessage);
+                console.log($(this).attr("data-val-number"));
+                console.log(data.id);
+                if (data.id) {
+                    $(".rs-select2").find(".field-validation-error").css("display", "none");
+
+                    $(".focus-select100").addClass("select100-show");
+                    $("[data-valmsg-for= 'Movie.GenreId']").removeClass("validation-error-message");
+
+                } else {
+                    $(".rs-select2").find(".field-validation-error").css("display", "block");
+
+                    $("[data-valmsg-for= 'Mustomer.GenreId']").addClass("validation-error-message");
+
+                    $(".focus-select100").removeClass("select100-show");
+
+                }
+            });
+        })
+
+
+    </script>
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@*<h3>
+
+        @Model.Title
+    </h3>
+    <hr />
+
+
+    @using (Html.BeginForm("Save", "Movies"))
+    {
+        <div class="form-group">
+
+            @Html.LabelFor(m => Model.Name)
+            @Html.TextBoxFor(m => Model.Name, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => Model.Name)
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => Model.GenreId)
+            @Html.DropDownListFor(m => Model.GenreId, new SelectList(Model.Genres, "Id", "Name"), "Select Genre", new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => Model.GenreId)
+
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => Model.ReleaseDate)
+            @Html.TextBoxFor(m => Model.ReleaseDate, "{0:dd MM yyyy}", new { @class = "form-control ", @type = "text", @id = "formDatepicker", @autocomplete = "off", @value = "" })
+            @Html.ValidationMessageFor(m => Model.ReleaseDate)
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => Model.NumberInStock)
+            @Html.TextBoxFor(m => Model.NumberInStock, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => Model.NumberInStock)
+        </div>
+
+        @Html.HiddenFor(m => Model.Id)
+        <button class="btn btn-primary" type="submit">Save</button>
+
+
+    }*@

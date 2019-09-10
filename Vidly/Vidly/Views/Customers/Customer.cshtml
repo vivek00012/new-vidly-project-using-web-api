@@ -1,0 +1,16 @@
+﻿
+@{
+    ViewBag.Title = "Customer";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<ul class="list-group">
+    <li class="list-group-item"><strong>Membership Type :</strong>@Model.MembershipType</li>
+    @if (Model.CustomerBirthDate != null)
+    {
+    <li class="list-group-item"><strong>Birth Date :</strong>@Model.CustomerBirthDate.ToString("MM-dd-yyyy")</li>
+    }
+
+</ul>
+
